@@ -37,6 +37,12 @@
       </div>
     </nav>
     <div class="collapse" id="contenidoColapsable" style="color: black">
+      {% if user.is_authenticated %}
+        <form class="logout" action="{% url 'users:logout' %}" method="POST">
+          {% csrf_token %}
+          <button class="logout-button" aria-label="Logout" title="Logout">Logout</button>
+        </form>
+      {% endif %}
       <a href="{% url 'products:list' %}">Todos los productos</a>
       <div class="card card-body">
         <a class="btn-block" type="button" data-bs-toggle="collapse" data-bs-target="#productos" aria-expanded="false" aria-controls="contenidoColapsable1" href="#" style="display: block">
