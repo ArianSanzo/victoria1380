@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+    Productos
+{% endblock %}
+
+{% block content %}
+    <section>
+        <h1>Productos:</h1>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for product in products %}
+                <div class="col">
+                    <div class="card h-100" style="width: 18rem;">
+                        {% if product.images.all %}
+                            {% if product.images.count == 1 %}
+                                <img src="{{ product.images.first.image.url }}" alt="Imagen para {{ product }}">
+                            {% else %}
+                                <div id="carousel-{{ product }}" class="carousel slide">
+                                    <div class="carousel-inner">
+                                        {% for image in product.images.all %}
+                                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                                    <img src="{{ image.image.url }}" class="d-block w-100" alt="Imagen para {{ product }}">
+                                                </div>
+                                        {% endfor %}
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ product }}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ product }}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <img src="{% static 'default.jpg' %}" class="d-block w-100" alt="{{ product }} no tiene imagen">
+                        {% endif %}
+                        <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p>{% for category in product.categories.all %}{{ category }} {% endfor %}</p>
+                        <p class="card-text">${{ product.cost }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    </section>
+{% endblock %}
