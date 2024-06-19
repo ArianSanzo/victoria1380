@@ -39,7 +39,11 @@
                             <img src="{% static 'default.jpg' %}" class="d-block w-100" alt="{{ product }} no tiene imagen">
                         {% endif %}
                         <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
+                        {% if user.is_authenticated %}
+                            <h2 class="card-title"><a href="{% url 'products:update_page' slug=product.slug %}">{{ product.name }}</a></h2>
+                        {% else %}
+                            <h2 class="card-title">{{ product.name }}</h2>
+                        {% endif %}
                         <p>{% for category in product.categories.all %}{{ category }} {% endfor %}</p>
                         <p class="card-text">${{ product.cost }}</p>
                         </div>
