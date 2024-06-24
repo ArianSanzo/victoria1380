@@ -1,18 +1,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic.edit import UpdateView
+from django.views import View
+from django.views.generic.edit import UpdateView, CreateView
+from django.views.generic import ListView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from .models import Product, Image
 from .forms import ProductForm, ImageFormSet
 
 # Create your views here.
-def products_list(request):
-    products = Product.objects.all().order_by('date')
-    return render(request, 'products/products_list.html', {'products': products})
+class ProductListView(ListView):
+    model = Product
+    template_name = 'products/products_list.html'
+    context_object_name = 'products'
+    ordering = ['date']
 
-class ProductUpdateView(UpdateView):
+class ProductBaseView(View):
     model = Product
     form_class = ProductForm
-    template_name = 'products/product_update_page.html'
+    template_name = 'products/product_form.html'
     success_url = reverse_lazy('products:list')
 
     def get_context_data(self, **kwargs):
@@ -30,6 +36,14 @@ class ProductUpdateView(UpdateView):
             self.object = form.save()
             image_formset.instance = self.object
             image_formset.save()
-            return redirect(self.get_success_url())
+            return super().form_valid(form)
         else:
             return self.form_invalid(form)
+
+@method_decorator(login_required(login_url='/users/login/'), name='dispatch')
+class ProductCreateView(ProductBaseView, CreateView):
+    pass
+
+@method_decorator(login_required(login_url='/users/login/'), name='dispatch')
+class ProductUpdateView(ProductBaseView, UpdateView):
+    pass

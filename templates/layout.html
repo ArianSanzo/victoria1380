@@ -29,6 +29,11 @@
               Productos
             </button>
           </ul>
+          {% if user.is_authenticated %}
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <a href="{% url 'products:create_page' %}">Agregar</a>
+          </ul>
+          {% endif %}
           <form class="d-flex" role="search">
             <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
             <button class="btn btn-outline-success" type="submit">Buscar</button>
