@@ -5,11 +5,23 @@ from django.utils.text import slugify
 
 # Create your models here.
 
-class Category(models.Model):
+class PrimaryCategory(models.Model):
     name = models.CharField(max_length=30)
-    
+
     def __str__(self):
         return self.name
+
+class SecondaryCategory(models.Model):
+    name = models.CharField(max_length=30)
+    
+    def __str__(self) -> str:
+        return self.name
+
+class Size(models.Model):
+    size = models.IntegerField()
+
+    def __str__(self) -> str:
+        return str(self.size)
 
 class Product(models.Model):
     id = models.AutoField(primary_key=True)
@@ -17,7 +29,11 @@ class Product(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     cost = models.FloatField()
-    categories = models.ManyToManyField(Category, related_name='products')
+    primary_category = models.ForeignKey(PrimaryCategory, on_delete=models.PROTECT, related_name='products')
+    secondary_categories = models.ManyToManyField(SecondaryCategory, related_name='products')
+    sizes = models.ManyToManyField(Size, related_name='products')
+    unique_size = models.BooleanField(default=False)
+    on_sale = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.slug:

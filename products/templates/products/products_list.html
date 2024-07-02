@@ -44,13 +44,19 @@
                         {% else %}
                             <h2 class="card-title">{{ product.name }}</h2>
                         {% endif %}
-                        <p>{% for category in product.categories.all %}{{ category }} {% endfor %}</p>
+                        <p> {{ product.primary_category }} </p>
+                        <p>{% for secondary_categories in product.secondary_categories.all %}{{ secondary_categories }} {% endfor %}</p>
+                        {% if product.unique_size %}
+                            <p>Talle unico</p>
+                        {% endif %}
                         <p class="card-text">${{ product.cost }}</p>
+                        {% if product.on_sale %}
+                            <p>En oferta</p>
+                        {% endif %}
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
-
     </section>
 {% endblock %}

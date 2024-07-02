@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Category, Image
+from .models import Product, PrimaryCategory, SecondaryCategory, Image, Size
 
 class ImageInline(admin.TabularInline):
     model = Image
@@ -10,5 +10,7 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [ImageInline]
 
 # Register your models here.
-admin.site.register(Category)
+admin.site.register(PrimaryCategory)
+admin.site.register(SecondaryCategory)
+admin.site.register(Size)
 admin.site.register(Image)
