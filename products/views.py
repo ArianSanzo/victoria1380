@@ -5,8 +5,10 @@ from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from .models import Product, Image
+from django.db.models import Q
+from .models import Product, Image, PrimaryCategory, SecondaryCategory
 from .forms import ProductForm, ImageFormSet
+from .context_processors import primary_to_secondary_context
 
 # Create your views here.
 class ProductListView(ListView):
@@ -14,6 +16,22 @@ class ProductListView(ListView):
     template_name = 'products/products_list.html'
     context_object_name = 'products'
     ordering = ['date']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('search')
+        if query:
+            queryset = queryset.filter(
+                Q(name__icontains=query) |
+                Q(primary_category__name__icontains=query) |
+                Q(secondary_categories__name__icontains=query)
+            ).distinct()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(primary_to_secondary_context(request=self.request))
+        return context
 
 class ProductBaseView(View):
     model = Product

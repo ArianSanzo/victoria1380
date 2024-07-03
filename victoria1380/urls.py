@@ -25,7 +25,7 @@ urlpatterns = [
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
     path('admin/', admin.site.urls),
-    path('', HomePageView.as_view()),
+    path('', HomePageView.as_view(), name='home'),
     path('products/', include('products.urls')),
     path('users/', include('users.urls')),
 ]

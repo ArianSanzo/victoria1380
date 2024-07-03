@@ -19,7 +19,7 @@
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Victoria 1380</a>
+        <a class="navbar-brand" href="{% url 'home' %}">Victoria 1380</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -34,8 +34,9 @@
             <a href="{% url 'products:create_page' %}">Agregar</a>
           </ul>
           {% endif %}
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
+          <form class="d-flex" role="search" method="get" action="{% url 'products:list' %}">
+            {% csrf_token %}
+            <input class="form-control me-2" name="search" type="search" placeholder="Buscar producto" aria-label="Buscar producto" value="{{ request.GET.search }}">
             <button class="btn btn-outline-success" type="submit">Buscar</button>
           </form>
         </div>
@@ -48,29 +49,27 @@
           <button class="logout-button" aria-label="Logout" title="Logout">Logout</button>
         </form>
       {% endif %}
-      <a href="{% url 'products:list' %}">Todos los productos</a>
       <div class="card card-body">
-        <a class="btn-block" type="button" data-bs-toggle="collapse" data-bs-target="#productos" aria-expanded="false" aria-controls="contenidoColapsable1" href="#" style="display: block">
-          Damas
-        </a>
-        <div class="collapse" id="productos" style="color: black">
-          <div class="card card-body">
-            <a class="" href="#">Remeras</a>
+        <div>
+          <a class="btn btn-secondary" href="{% url 'products:list' %}">Todos los productos</a>
+        </div>
+        {% for primary, secondary_categories in primary_to_secondary.items %}
+          <div class="dropend">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ primary.name }}
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="{% url 'products:list' %}?search={{ primary.name }}">Ver todos</a>
+              </li>
+              {% for secondary in secondary_categories %}
+                <li>
+                  <a class="dropdown-item" href="{% url 'products:list' %}?search={{ secondary.name }}">{{ secondary.name }}</a>
+                </li>
+              {% endfor %}
+            </ul>
           </div>
-        </div>
-        <div class="dropend">
-          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Caballeros
-          </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Remeras</a></li>
-            <li><a class="dropdown-item" href="#">Remeras</a></li>
-            <li><a class="dropdown-item" href="#">Remeras</a></li>
-            <li><a class="dropdown-item" href="#">Remeras</a></li>
-            <li><a class="dropdown-item" href="#">Remeras</a></li>
-            <li><a class="dropdown-item" href="#">Remeras</a></li>
-          </ul>
-        </div>
+        {% endfor %}
       </div>
     </div>
     <main>
